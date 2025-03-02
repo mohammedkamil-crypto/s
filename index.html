@@ -9,12 +9,24 @@
    
 </head>
 <body>
+    <button id="clear-button">Clear Chat</button>
+
+    <div id="chat-messages"></div>
+<input id="chat-input" type="text" />
+<button id="send-button">Send</button>
         <!-- AI Assistant -->
         <div class="ai-assistant">
             <div class="ai-chat">
                 <div class="chat-header">
                     <h3>Portfolio Assistant</h3>
-                    <button class="close-chat">&times;</button>
+                    <div class="header-buttons">
+                        <button class="chat-button clear-chat" title="Clear chat">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="chat-button close-chat" title="Close chat">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="chat-messages"></div>
                 <div class="typing-indicator">AI is typing...</div>
