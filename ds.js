@@ -82,7 +82,6 @@ window.addEventListener('resize', () => {
 // AI Assistant Functionality
 const aiButton = document.querySelector('.ai-button');
 const aiChat = document.querySelector('.ai-chat');
-const chatMessages = document.querySelector('.chat-messages');
 const chatInput = document.querySelector('.chat-input input');
 const sendButton = document.querySelector('.send-button');
 const typingIndicator = document.querySelector('.typing-indicator');
@@ -315,6 +314,7 @@ function getBotReply(userInput) {
 
     return mockResponses["default"];
 }
+
 // Update the response logic
 function getAIResponse(prompt) {
     const lowerPrompt = prompt.toLowerCase();
@@ -348,3 +348,74 @@ chatInput.addEventListener('keypress', async (e) => {
     }
 });
 
+// Add to ds.js
+const sections = document.querySelectorAll('section');
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, { threshold: 0.1 });
+
+sections.forEach(section => observer.observe(section));
+
+aiButton.addEventListener('click', () => {
+    aiChat.style.display = 'flex'; // Show the chat
+    setTimeout(() => {
+        aiChat.style.opacity = '1'; // Fade in
+        aiChat.style.transform = 'scale(1)'; // Scale to normal size
+    }, 10); // Small delay to allow display change
+});
+
+closeChat.addEventListener('click', () => {
+    aiChat.style.opacity = '0'; // Fade out
+    aiChat.style.transform = 'scale(0.9)'; // Scale down slightly
+    setTimeout(() => {
+        aiChat.style.display = 'none'; // Hide after transition
+    }, 300); // Match the 0.3s transition duration
+    aiButton.style.display = 'flex'; // Show the button again
+});
+
+// ds.js
+// Conversation storage
+let conversation = JSON.parse(localStorage.getItem('conversation')) || [];
+
+// DOM Elements
+const chatMessages = document.querySelector('.chat-messages');
+const clearButton = document.querySelector('.clear-chat');
+
+// Load previous conversation
+window.addEventListener('DOMContentLoaded', () => {
+    conversation.forEach(msg => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${msg.isUser ? 'user-message' : 'ai-message'}`;
+        messageDiv.textContent = msg.text;
+        chatMessages.appendChild(messageDiv);
+    });
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+});
+
+// Clear chat functionality
+clearButton.addEventListener('click', () => {
+    chatMessages.innerHTML = '';
+    conversation = [];
+    localStorage.removeItem('conversation');
+    // Optional: Add confirmation message
+    addMessage('Chat history cleared', false);
+});
+
+// Modified addMessage function
+function addMessage(text, isUser = true) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+    messageDiv.textContent = text;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Save to storage
+    conversation.push({ text, isUser });
+    localStorage.setItem('conversation', JSON.stringify(conversation));
+}
+
+// Rest of the original JS code remains unchanged...
